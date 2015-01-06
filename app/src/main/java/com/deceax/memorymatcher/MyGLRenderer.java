@@ -16,10 +16,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
 
-    private Square mSquare1;
-    private Square mSquare2;
-    private Square mSquare3;
-    private Square mSquare4;
+    private GameBoard gameBoard;
 
     private float screenHeight;
     private float screenWidth;
@@ -28,10 +25,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        mSquare1 = new Square();
-        mSquare2 = new Square();
-        mSquare3 = new Square();
-        mSquare4 = new Square();
     }
 
     @Override
@@ -39,28 +32,22 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glViewport(0, 0, width, height);
         ratio = (float) width/height;
         Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
+
+        screenHeight = (float)(Math.tan(Math.toRadians(45) / 2.0f) * 3.0f);
+        screenWidth = screenHeight * ratio;
+
+        gameBoard = new GameBoard(screenWidth * 2, screenHeight * 2, 25, 50);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 4, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        screenHeight = (float)(Math.tan(Math.toRadians(45) / 2.0f) * 3.0f);
-        screenWidth = screenHeight * ratio;
-
-        mSquare1.y = screenHeight -0.2f;
-        mSquare2.y = -screenHeight + 0.2f;
-
-        mSquare3.x = screenWidth - (0.2f * ratio);
-        mSquare4.x = -screenWidth + (0.2f * ratio);
-
-        mSquare1.draw(mMVPMatrix);
-        mSquare2.draw(mMVPMatrix);
-        mSquare3.draw(mMVPMatrix);
-        mSquare4.draw(mMVPMatrix);
+        gameBoard.colorize();
+        gameBoard.draw(mMVPMatrix);
     }
 
     public static void checkGlError(String glOperation) {

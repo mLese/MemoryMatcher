@@ -8,8 +8,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import java.util.Random;
 
-public class Square {
+public class  Rectangle implements GLDrawable {
 
     private FloatBuffer vertexBuffer;
     private ShortBuffer drawListBuffer;
@@ -35,9 +36,46 @@ public class Square {
     float color[] = { 1.0f, 0.75f, 0.0f, 1.0f};
     float x, y, z;
 
-    public Square() {
+    public Rectangle() {
+        x = y = z = 0.0f;
+        allocateBuffers();
+        loadShaders();
+    }
+
+    public Rectangle(float width, float height) {
         x = y = z = 0.0f;
 
+        // top left
+        squareCoords[0] = -1 * (width/2.0f);
+        squareCoords[1] = (height/2.0f);
+        squareCoords[2] = 0.0f;
+
+        // bottom left
+        squareCoords[3] = -1 * (width/2.0f);
+        squareCoords[4] = -1 * (height/2.0f);
+        squareCoords[5] = 0.0f;
+
+        // bottom right
+        squareCoords[6] = (width/2.0f);
+        squareCoords[7] = -1 * (height/2.0f);
+        squareCoords[8] = 0.0f;
+
+        // top right
+        squareCoords[9] = (width/2.0f);
+        squareCoords[10] = (height/2.0f);
+        squareCoords[11] = 0.0f;
+
+        // random colors
+        Random r = new Random();
+        color[0] = r.nextFloat();
+        color[1] = r.nextFloat();
+        color[2] = r.nextFloat();
+
+        allocateBuffers();
+        loadShaders();
+    }
+
+    private void allocateBuffers() {
         ByteBuffer byteBuffer = ByteBuffer.allocateDirect(squareCoords.length * 4);
         byteBuffer.order(ByteOrder.nativeOrder());
 
@@ -51,7 +89,9 @@ public class Square {
         drawListBuffer = dlb.asShortBuffer();
         drawListBuffer.put(drawOrder);
         drawListBuffer.position(0);
+    }
 
+    private void loadShaders() {
         int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
         int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
 
@@ -102,6 +142,21 @@ public class Square {
 
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(mPositionHandle);
+    }
+
+    public void update() {
+        // frame update code
+    }
+
+    public void move(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void setColor(float[] color) {
+        this.color[0] = color[0];
+        this.color[1] = color[1];
+        this.color[2] = color[2];
     }
 
     public static int loadShader(int type, String shaderCode) {

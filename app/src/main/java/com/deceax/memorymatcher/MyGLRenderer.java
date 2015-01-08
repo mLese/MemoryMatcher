@@ -16,7 +16,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
 
-    private GameBoard gameBoard;
+    private Game game;
 
     private float screenHeight;
     private float screenWidth;
@@ -36,7 +36,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         screenHeight = (float)(Math.tan(Math.toRadians(45) / 2.0f) * 3.0f);
         screenWidth = screenHeight * ratio;
 
-        gameBoard = new GameBoard(screenWidth * 2, screenHeight * 2, 25, 50);
+        game = new Game(screenWidth * 2, screenHeight *2, width, height );
     }
 
     @Override
@@ -46,8 +46,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 4, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        gameBoard.colorize();
-        gameBoard.draw(mMVPMatrix);
+        game.onDraw(mMVPMatrix);
+    }
+
+    public void onTouch(float x, float y) {
+        game.onTouch(x, y);
     }
 
     public static void checkGlError(String glOperation) {

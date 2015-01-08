@@ -2,12 +2,27 @@ package com.deceax.memorymatcher;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.view.MotionEvent;
+import android.view.View;
 
 public class MyGLSurfaceView extends GLSurfaceView {
+
+    MyGLRenderer mRenderer;
 
     public MyGLSurfaceView(Context context) {
         super(context);
         setEGLContextClientVersion(2);
-        setRenderer(new MyGLRenderer());
+        mRenderer = new MyGLRenderer();
+        setRenderer(mRenderer);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent e) {
+        float x = e.getX();
+        float y = e.getY();
+
+        mRenderer.onTouch(x, y);
+
+        return true;
     }
 }

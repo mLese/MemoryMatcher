@@ -34,16 +34,16 @@ public class  Rectangle implements GLDrawable {
     private short drawOrder[] = { 0, 1, 2, 0, 2, 3 };
 
     float color[] = { 1.0f, 0.75f, 0.0f, 1.0f};
-    float x, y, z;
+    Vec3 position;
 
     public Rectangle() {
-        x = y = z = 0.0f;
+        position = new Vec3();
         allocateBuffers();
         loadShaders();
     }
 
     public Rectangle(float width, float height) {
-        x = y = z = 0.0f;
+        position = new Vec3();
 
         // top left
         squareCoords[0] = -1 * (width/2.0f);
@@ -105,7 +105,7 @@ public class  Rectangle implements GLDrawable {
         float[] mvpCopy = mvpMatrix.clone();
 
         // Apply Translation
-        Matrix.translateM(mvpCopy, 0, x, y, z);
+        Matrix.translateM(mvpCopy, 0, position.x(), position.y(), position.z());
 
         // Add program to OpenGL environment
         GLES20.glUseProgram(mProgram);
@@ -149,8 +149,8 @@ public class  Rectangle implements GLDrawable {
     }
 
     public void move(float x, float y) {
-        this.x = x;
-        this.y = y;
+        position.setX(x);
+        position.setY(y);
     }
 
     public void setColor(float[] color) {

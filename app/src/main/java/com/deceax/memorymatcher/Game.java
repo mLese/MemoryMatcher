@@ -13,7 +13,6 @@ public class Game {
     }
 
     public void onDraw(float[] mvp) {
-        //board.colorize();
         board.draw(mvp);
     }
 

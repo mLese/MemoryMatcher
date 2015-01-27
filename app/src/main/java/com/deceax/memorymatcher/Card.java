@@ -2,10 +2,10 @@ package com.deceax.memorymatcher;
 
 public class Card {
     private GLDrawable cardDrawable;
+    private float[] matchColor;
 
     public Card(float width, float height) {
         cardDrawable = new Rectangle(width, height);
-
     }
 
     public void draw(float[] mvp) {
@@ -19,4 +19,8 @@ public class Card {
     public void setColor(float[] color) {
         cardDrawable.setColor(color);
     }
+
+    public void setMatchColor(float[] color) { matchColor = color; }
+
+    public float[] getMatchColor() { return matchColor; }
 }

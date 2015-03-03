@@ -14,7 +14,10 @@ public class GameBoard {
     private Vec2[][] matchingKey;
 
     private int numTouched = 0;
+    private int matchCount = 0;
     Card touch1;
+
+    private static boolean disableTouch = false;
 
     private int boardWidth;
     private int boardHeight;
@@ -110,6 +113,8 @@ public class GameBoard {
     }
 
     public void onTouch(float x, float y, int resX, int resY) {
+        if (disableTouch) return; // eat touches when board is inactive
+
         // convert the x/y touch to board index positions
         int xIndex = 0;
         int yIndex = 0;
@@ -139,22 +144,58 @@ public class GameBoard {
 
         numTouched += 1;
 
+        final int xi = xIndex;
+        final int yi = yIndex;
+
         if (numTouched == 1) {
             touch1 = gameBoard[xIndex][yIndex];
             touch1.setColor(touch1.getMatchColor());
         } else if (numTouched == 2) {
+            disableTouch = true;
             gameBoard[xIndex][yIndex].setColor(gameBoard[xIndex][yIndex].getMatchColor());
-            if (Arrays.equals(touch1.getMatchColor(),gameBoard[xIndex][yIndex].getMatchColor())) {
-                Log.d("LESE","MATCH");
-            } else {
-                Log.d("LESE", "Nomatch");
-                touch1.setColor(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
-                gameBoard[xIndex][yIndex].setColor(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
-            }
 
-            numTouched = 0;
+            new Thread(new secondTouchRunnable(new SecondTouchCallback() {
+                @Override
+                public void onReturn() {
+                    if (Arrays.equals(touch1.getMatchColor(),gameBoard[xi][yi].getMatchColor())) {
+                        Log.d("LESE","MATCH");
+                        matchCount+=2;
+                    } else {
+                        Log.d("LESE", "Nomatch");
+                        touch1.setColor(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
+                        gameBoard[xi][yi].setColor(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
+                    }
+                    numTouched = 0;
+                    disableTouch = false;
+                }
+            })).run();
+
+        }
+        Log.d("MatchCount", ""+matchCount);
+        if (matchCount == (boardWidth * boardHeight)) {
+            Log.d("winner", "winner winner");
+        }
+    }
+
+    private class secondTouchRunnable implements Runnable {
+
+        SecondTouchCallback callback;
+
+        public secondTouchRunnable(SecondTouchCallback callback) {
+            this.callback = callback;
         }
 
-        //gameBoard[xIndex][yIndex].setColor(gameBoard[xIndex][yIndex].getMatchColor());
+        public void run() {
+            try {
+                Thread.sleep(500);
+            } catch (Exception e) {
+                Log.e("Lese", "lOL exception EATing");
+            }
+            callback.onReturn();
+        }
+    }
+
+    public interface SecondTouchCallback {
+        public void onReturn();
     }
 }

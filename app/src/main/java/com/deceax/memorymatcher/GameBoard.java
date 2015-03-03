@@ -158,10 +158,8 @@ public class GameBoard {
                 @Override
                 public void onReturn() {
                     if (Arrays.equals(touch1.getMatchColor(),gameBoard[xi][yi].getMatchColor())) {
-                        Log.d("LESE","MATCH");
                         matchCount+=2;
                     } else {
-                        Log.d("LESE", "Nomatch");
                         touch1.setColor(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
                         gameBoard[xi][yi].setColor(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
                     }
@@ -171,9 +169,9 @@ public class GameBoard {
             })).run();
 
         }
-        Log.d("MatchCount", ""+matchCount);
+
         if (matchCount == (boardWidth * boardHeight)) {
-            Log.d("winner", "winner winner");
+            Log.i(TAG,"Winner");
         }
     }
 
@@ -189,7 +187,7 @@ public class GameBoard {
             try {
                 Thread.sleep(500);
             } catch (Exception e) {
-                Log.e("Lese", "lOL exception EATing");
+                Log.e(TAG, "lOL exception EATing");
             }
             callback.onReturn();
         }

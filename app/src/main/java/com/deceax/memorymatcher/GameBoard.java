@@ -3,9 +3,8 @@ package com.deceax.memorymatcher;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Random;
-import java.util.UUID;
 
 public class GameBoard {
 
@@ -13,6 +12,9 @@ public class GameBoard {
 
     private Card[][] gameBoard;
     private Vec2[][] matchingKey;
+
+    private int numTouched = 0;
+    Card touch1;
 
     private int boardWidth;
     private int boardHeight;
@@ -135,7 +137,24 @@ public class GameBoard {
             startY += gridHeight;
         }
 
-        Log.d(TAG, "Grid x/y: " + xIndex + " " + yIndex);
-        gameBoard[xIndex][yIndex].setColor(gameBoard[xIndex][yIndex].getMatchColor());
+        numTouched += 1;
+
+        if (numTouched == 1) {
+            touch1 = gameBoard[xIndex][yIndex];
+            touch1.setColor(touch1.getMatchColor());
+        } else if (numTouched == 2) {
+            gameBoard[xIndex][yIndex].setColor(gameBoard[xIndex][yIndex].getMatchColor());
+            if (Arrays.equals(touch1.getMatchColor(),gameBoard[xIndex][yIndex].getMatchColor())) {
+                Log.d("LESE","MATCH");
+            } else {
+                Log.d("LESE", "Nomatch");
+                touch1.setColor(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
+                gameBoard[xIndex][yIndex].setColor(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
+            }
+
+            numTouched = 0;
+        }
+
+        //gameBoard[xIndex][yIndex].setColor(gameBoard[xIndex][yIndex].getMatchColor());
     }
 }

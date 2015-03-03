@@ -21,7 +21,8 @@ public class MyGLSurfaceView extends GLSurfaceView {
         float x = e.getX();
         float y = e.getY();
 
-        mRenderer.onTouch(x, y);
+        if (e.getAction() == MotionEvent.ACTION_UP)
+            mRenderer.onTouch(x, y);
 
         return true;
     }

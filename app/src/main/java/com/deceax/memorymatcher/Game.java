@@ -9,7 +9,7 @@ public class Game {
     public Game(float screenWidth, float screenHeight, int resX, int resY) {
         this.resX = resX;
         this.resY = resY;
-        board = new GameBoard(screenWidth, screenHeight, 5, 4);
+        board = new GameBoard(screenWidth, screenHeight, 4, 3);
     }
 
     public void onDraw(float[] mvp) {
